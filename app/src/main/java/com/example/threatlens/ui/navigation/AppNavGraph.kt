@@ -5,6 +5,8 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Feed
@@ -60,6 +62,7 @@ fun AppNavGraph(
     val showBottomBar = isHome || isSubscriptions || (isNotifications && deepLinkSubscriptionId == null) || isDebug
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = ThreatLensBackground,
         bottomBar = {
             if (showBottomBar) {
@@ -228,7 +231,9 @@ fun AppNavGraph(
         NavHost(
             navController = navController,
             startDestination = effectiveStart,
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues),
             enterTransition = {
                 val fromRoute = initialState.destination.route
                 val toRoute = targetState.destination.route

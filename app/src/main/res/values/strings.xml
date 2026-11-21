@@ -1,0 +1,180 @@
+<resources>
+    <!-- App Branding -->
+    <string name="app_name">ThreatLens</string>
+    <string name="app_subtitle">Cyber Threat Intelligence Platform</string>
+    <string name="channel_alerts_name">Threat Alerts</string>
+    <string name="channel_alerts_description">Cyber threat intelligence alerts from your subscriptions</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_subscriptions">Subscriptions</string>
+    <string name="nav_notifications">Notifications</string>
+    <string name="nav_more">More</string>
+
+    <!-- Common Actions & Buttons -->
+    <string name="action_back">Back</string>
+    <string name="action_share">Share</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_reset_filters">Reset Filters</string>
+    <string name="action_allow">Allow</string>
+    <string name="action_dont_allow">Don\'t allow</string>
+    <string name="action_enable">Enable</string>
+    <string name="action_dismiss">Dismiss</string>
+    <string name="action_pause">Pause</string>
+    <string name="action_resume">Resume</string>
+    <string name="action_undo">Undo</string>
+    <string name="action_open_source">Open in Source</string>
+    <string name="action_open_settings">Open Settings</string>
+    <string name="action_continue_without_alerts">Continue Without Alerts</string>
+    <string name="action_create_subscription">Create Subscription</string>
+    <string name="action_view_subscription">View Subscription</string>
+    <string name="action_view_all_matches">View All %1$d Matches</string>
+    <string name="action_show_less">Show Less ↑</string>
+    <string name="action_view_all_arrow">View All (%1$d) →</string>
+    <string name="action_trigger_push">Trigger Push Notification</string>
+    <string name="action_trigger_test_crash">Trigger Test Crash</string>
+    <string name="action_crash_now">Crash Now</string>
+
+    <!-- News Feed Screen -->
+    <string name="search_placeholder">Search cyber news&#8230;</string>
+    <string name="category_all">All</string>
+    <string name="latest_threat_feed">LATEST THREAT FEED</string>
+    <string name="section_feed_title">%1$s FEED</string>
+    <string name="reports_count">%1$d reports</string>
+    <string name="min_read">%1$d min read</string>
+    <string name="default_read_time">3 min read</string>
+
+    <!-- Story Detail Screen -->
+    <string name="general_threat_activity">General Threat Activity</string>
+    <string name="tlp_format">TLP: %1$s</string>
+    <string name="tlp_default">Clear</string>
+    <string name="tag_ransomware">Ransomware</string>
+    <string name="tag_subscription_match">Subscription Match</string>
+    <string name="header_at_a_glance">At a Glance</string>
+    <string name="header_summary">Summary</string>
+    <string name="header_how_attack_works">How the Attack Works</string>
+    <string name="header_icounter_observation">iCounter Observation</string>
+    <string name="header_intelligence">Intelligence</string>
+    <string name="intel_techniques">Techniques (MITRE)</string>
+    <string name="intel_actors">Threat Actors</string>
+    <string name="intel_malware">Malware</string>
+    <string name="intel_tools">Tools</string>
+    <string name="intel_cves">CVEs</string>
+    <string name="intel_vendors">Vendors</string>
+    <string name="intel_products">Products</string>
+    <string name="intel_sectors">Target Sectors</string>
+    <string name="intel_countries">Target Countries</string>
+    <string name="default_attack_explanation">The attack leveraged a combination of social engineering and technical exploitation. %1$s</string>
+    <string name="default_icounter_observation">Automated analysis identified key indicators in this report.</string>
+    <string name="share_story_chooser_title">Share Threat Story</string>
+    <string name="metadata_time_read_separator">%1$s  ·  %2$s</string>
+
+    <!-- Subscriptions List Screen -->
+    <string name="title_my_subscriptions">My Subscriptions</string>
+    <string name="subscription_deleted_snackbar">\'%1$s\' deleted</string>
+    <string name="push_alerts_disabled_device">Push alerts are disabled on this device.</string>
+
+    <!-- Subscription Form Screen -->
+    <string name="title_create_subscription">Create Subscription</string>
+    <string name="title_edit_subscription">Edit Subscription</string>
+    <string name="form_name_label">Subscription Name *</string>
+    <string name="form_name_placeholder">e.g. Healthcare India Ransomware</string>
+    <string name="form_name_required">Name is required</string>
+    <string name="form_categories_label">Categories *</string>
+    <string name="form_categories_placeholder">Select categories...</string>
+    <string name="form_categories_required">Select at least one category</string>
+    <string name="form_cadence_label">Cadence *</string>
+    <string name="cadence_daily">Daily</string>
+    <string name="cadence_weekly">Weekly</string>
+    <string name="cadence_monthly">Monthly</string>
+    <string name="form_days_label">Days *</string>
+    <string name="form_time_label">Time *</string>
+    <string name="form_timezone_label">Time Zone *</string>
+    <string name="time_picker_content_desc">Time picker</string>
+    <string name="toggle_options_content_desc">Toggle options</string>
+    <string name="remove_content_desc">Remove</string>
+    <string name="push_alerts_disabled_title">Push alerts are disabled</string>
+    <string name="push_alerts_disabled_desc">Enable notifications to receive push alerts when new threats match this rule.</string>
+    <string name="permission_denied_dialog_title">Notification Permission Denied</string>
+    <string name="permission_denied_dialog_message">You have disabled notifications for ThreatLens. New threat intelligence matches will still be saved, but push notifications will not pop up on your device.\n\nTo receive real-time alerts, you can enable notifications in App Settings.</string>
+
+    <!-- Subscription Detail Screen -->
+    <string name="delete_subscription_dialog_title">Delete subscription?</string>
+    <string name="delete_subscription_dialog_message">Are you sure you want to delete \'%1$s\'? You will stop receiving alerts for this rule.</string>
+    <string name="subscription_details_unavailable">Subscription details unavailable</string>
+    <string name="failed_load_details_and_matches">Failed to load subscription details &amp; matches</string>
+    <string name="subscription_and_matches_error_sub">Subscription: %1$s\nMatches: %2$s</string>
+    <string name="status_active">Active</string>
+    <string name="status_paused">Paused</string>
+    <string name="monitored_intel_criteria">Monitored Intelligence Criteria</string>
+    <string name="current_matches_count">Current Matches (%1$d)</string>
+    <string name="could_not_load_matches">Could not load matches: %1$s</string>
+    <string name="last_updated_placeholder">Last updated Today, 09:15 AM</string>
+    <string name="refresh_matches">Refresh matches</string>
+
+    <!-- Window Matches / Notifications Screen -->
+    <string name="title_push_notifications">Push Notifications</string>
+    <string name="push_simulated_time">10m ago</string>
+    <string name="push_match_summary">%1$d new stories match your subscription</string>
+    <string name="title_matched_stories_count">Matched Stories (%1$d)</string>
+    <string name="no_stories_in_window">No stories in this window</string>
+    <string name="no_stories_in_window_sub">Check back soon for new threat intelligence updates.</string>
+
+    <!-- Loading, Empty & Error States -->
+    <string name="loading_latest_news">Loading latest cyber news...</string>
+    <string name="loading_threat_details">Loading threat details...</string>
+    <string name="loading_subscriptions">Loading subscriptions...</string>
+    <string name="loading_subscription">Loading subscription...</string>
+    <string name="loading_sub_and_matches">Loading subscription and matches...</string>
+    <string name="loading_push_matches">Loading push matches...</string>
+    <string name="error_generic_title">Something went wrong</string>
+    <string name="error_generic_subtitle">Please try again later.</string>
+    <string name="error_failed_to_load_story">Failed to load story.</string>
+    <string name="error_failed_to_load_subscriptions">Failed to load subscriptions.</string>
+    <string name="error_failed_to_load_push">Failed to load push notification results.</string>
+    <string name="empty_news_title">No news found</string>
+    <string name="empty_news_subtitle">Try a different search or category.</string>
+    <string name="empty_subscriptions_title">No subscriptions yet</string>
+    <string name="empty_subscriptions_subtitle">Create one to receive automated cyber threat alerts.</string>
+    <string name="empty_matches_title">No stories match this filter yet</string>
+    <string name="empty_matches_subtitle">New stories matching your criteria will appear here.</string>
+    <string name="offline_indicator_text">Connection error • Check network</string>
+    <string name="permission_dialog_title">Allow ThreatLens to send you notifications?</string>
+    <string name="permission_dialog_subtitle">Get timely alerts about cyber threats.</string>
+
+    <!-- Debug Screen -->
+    <string name="debug_title">Debug Tools</string>
+    <string name="debug_force_crash_title">Force Crash?</string>
+    <string name="debug_force_crash_message">This will crash the app immediately for Firebase Crashlytics testing.</string>
+    <string name="debug_theme_section">Theme &amp; Appearance</string>
+    <string name="debug_dark_mode">Dark Mode</string>
+    <string name="debug_light_mode">Light Mode</string>
+    <string name="debug_cyber_dark_active">Cyber Dark theme active</string>
+    <string name="debug_clean_light_active">Clean Light theme active</string>
+    <string name="debug_backend_section">Fake Backend Controls</string>
+    <string name="debug_latency_label">Latency (ms)</string>
+    <string name="debug_force_401">Force 401 Error</string>
+    <string name="debug_force_500">Force 500 Error</string>
+    <string name="debug_force_timeout">Force Timeout</string>
+    <string name="debug_device_info_section">Push, Subscriptions &amp; Device Info</string>
+    <string name="debug_label_sub_id">Subscription ID</string>
+    <string name="debug_label_window_id">Window ID</string>
+    <string name="debug_label_fcm_token">FCM Token</string>
+    <string name="debug_label_device_id">Device ID</string>
+    <string name="debug_simulations_section">Testing &amp; Simulations</string>
+    <string name="debug_push_triggered_snackbar">Push notification triggered! Check notification shade.</string>
+    <string name="debug_copied_to_clipboard">%1$s copied to clipboard</string>
+    <string name="debug_copy_content_desc">Copy %1$s</string>
+
+    <!-- Relative Time -->
+    <string name="time_just_now">Just now</string>
+    <string name="time_minutes_ago">%1$dm ago</string>
+    <string name="time_hours_ago">%1$dh ago</string>
+    <string name="time_days_ago">%1$dd ago</string>
+    <string name="time_default">2h ago</string>
+</resources>

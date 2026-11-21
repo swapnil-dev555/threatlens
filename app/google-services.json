@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1042366878636",
+    "project_id": "threatlens-28a77",
+    "storage_bucket": "threatlens-28a77.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1042366878636:android:46b1368b2ca82d1e096009",
+        "android_client_info": {
+          "package_name": "com.example.threatlens"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1wwz5ZD6nJ9nhKHGz2jgpe8UjNZy6Myg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

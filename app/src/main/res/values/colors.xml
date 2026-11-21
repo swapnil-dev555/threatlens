@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base Colors -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Theme Palette - Dark -->
+    <color name="window_background">#080E1E</color>
+    <color name="dark_background">#080E1E</color>
+    <color name="dark_surface">#0E172E</color>
+    <color name="dark_surface_elevated">#13203E</color>
+    <color name="dark_surface_highlight">#1B2C52</color>
+    <color name="dark_card_border">#1D325E</color>
+    <color name="dark_text_primary">#FFFFFF</color>
+    <color name="dark_text_secondary">#8FA3CE</color>
+    <color name="dark_text_tertiary">#5A709E</color>
+    <color name="cyber_cyan">#00E5FF</color>
+    <color name="cyan_dark">#0097A7</color>
+    <color name="cyan_light">#84FFFF</color>
+    <color name="active_green">#00E676</color>
+    <color name="active_green_bg">#072B1E</color>
+    <color name="high_severity">#FF3366</color>
+    <color name="medium_severity">#00B4D8</color>
+    <color name="low_severity">#00E676</color>
+    <color name="warning">#FFAB00</color>
+    <color name="error">#FF3B5C</color>
+    <color name="error_container">#3B0D18</color>
+    <color name="on_error_container">#FF8DA1</color>
+    <color name="dark_primary_container">#003744</color>
+    <color name="dark_on_secondary">#001F29</color>
+    <color name="dark_secondary_container">#0A2E46</color>
+    <color name="dark_on_secondary_container">#8CE3FF</color>
+    <color name="dark_on_tertiary">#00220E</color>
+    <color name="dark_on_tertiary_container">#6BFFB0</color>
+    <color name="dark_outline_variant">#162547</color>
+
+    <!-- Theme Palette - Light -->
+    <color name="light_background">#F3F5F9</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_surface_elevated">#FFFFFF</color>
+    <color name="light_surface_highlight">#E7ECF3</color>
+    <color name="light_card_border">#D6DFEC</color>
+    <color name="light_text_primary">#0F172A</color>
+    <color name="light_text_secondary">#475569</color>
+    <color name="light_text_tertiary">#8290A5</color>
+    <color name="light_cyan">#00838F</color>
+    <color name="light_cyan_dark">#005662</color>
+    <color name="light_cyan_light">#E0F7FA</color>
+    <color name="light_active_green">#15803D</color>
+    <color name="light_active_green_bg">#DCFCE7</color>
+    <color name="light_high_severity">#DC2626</color>
+    <color name="light_medium_severity">#0284C7</color>
+    <color name="light_low_severity">#16A34A</color>
+    <color name="light_warning">#D97706</color>
+    <color name="light_error">#DC2626</color>
+    <color name="light_error_container">#FEE2E2</color>
+    <color name="light_on_error_container">#991B1B</color>
+    <color name="light_on_primary_container">#00363F</color>
+    <color name="light_secondary_container">#E0F2FE</color>
+    <color name="light_on_secondary_container">#0369A1</color>
+    <color name="light_on_tertiary_container">#14532D</color>
+    <color name="light_outline_variant">#CBD5E1</color>
+
+    <!-- Specific UI Colors -->
+    <color name="color_dark_teal_button_text">#002029</color>
+    <color name="color_low_severity_dark_text">#003314</color>
+    <color name="color_hero_card_dark_start">#0F2647</color>
+    <color name="color_hero_card_dark_mid">#0A1B36</color>
+    <color name="color_hero_card_dark_end">#040A18</color>
+    <color name="color_hero_card_light_start">#EDF7FC</color>
+    <color name="color_hero_card_light_mid">#E2F0F9</color>
+    <color name="color_hero_card_light_end">#D6E9F5</color>
+    <color name="color_hero_overlay_dark_mid">#CC050C1B</color>
+    <color name="color_hero_overlay_dark_end">#F5050C1B</color>
+    <color name="color_hero_overlay_light_mid">#B3FFFFFF</color>
+    <color name="color_hero_overlay_light_end">#F8FFFFFF</color>
+    <color name="color_source_text_dark">#8FA3CE</color>
+    <color name="color_glance_bg_dark">#003644</color>
+    <color name="color_glance_bg_light">#BAF0FE</color>
+    <color name="color_glance_text_dark">#80EEFF</color>
+    <color name="color_glance_text_light">#003848</color>
+    <color name="color_glance_body_dark">#E0F7FA</color>
+    <color name="color_icounter_bg_dark">#26183C</color>
+    <color name="color_icounter_bg_light">#EADDFF</color>
+    <color name="color_icounter_header_dark">#D6BBFB</color>
+    <color name="color_icounter_header_light">#2E004E</color>
+    <color name="color_icounter_body_dark">#F3E8FF</color>
+    <color name="color_icounter_body_light">#210035</color>
+</resources>

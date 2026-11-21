@@ -1,4 +1,4 @@
-# CyberSentinel
+# ThreatLens
 
 A cyber-threat intelligence app for security analysts. Monitors a feed of cyber-news stories and
 lets analysts create **news subscriptions** — saved filters that deliver push notifications on a

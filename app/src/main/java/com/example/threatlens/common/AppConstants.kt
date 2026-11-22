@@ -31,6 +31,7 @@ object AppConstants {
     const val NOTIFICATION_ID_BASE = 1001
     const val EXTRA_SUBSCRIPTION_ID = "extra_subscription_id"
     const val EXTRA_WINDOW_ID = "extra_window_id"
+    const val EXTRA_STORY_ACTIVITY_KEY = "extra_story_activity_key"
     const val NOTIFICATION_PERMISSION_KEY = "notification_permission_granted"
 
     // ── DataStore / Preferences Keys ──

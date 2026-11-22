@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -39,16 +40,31 @@ import com.example.threatlens.ui.theme.*
 
 @Composable
 fun AppNavGraph(
+    deepLinkStoryActivityKey: String? = null,
     deepLinkSubscriptionId: String? = null,
-    deepLinkWindowId: String? = null
+    deepLinkWindowId: String? = null,
+    onDeepLinkConsumed: () -> Unit = {}
 ) {
     val navController = rememberNavController()
 
-    // If launched from a push notification, go directly to window matches
-    val effectiveStart: Any = if (deepLinkSubscriptionId != null && deepLinkWindowId != null) {
-        Screen.WindowMatches(deepLinkSubscriptionId, deepLinkWindowId)
-    } else {
-        Screen.NewsFeed
+    LaunchedEffect(deepLinkStoryActivityKey, deepLinkSubscriptionId, deepLinkWindowId) {
+        if (!deepLinkStoryActivityKey.isNullOrBlank()) {
+            navController.navigate(
+                Screen.StoryDetail(
+                    activityKey = deepLinkStoryActivityKey,
+                    subscriptionId = deepLinkSubscriptionId
+                )
+            )
+            onDeepLinkConsumed()
+        } else if (!deepLinkSubscriptionId.isNullOrBlank() && !deepLinkWindowId.isNullOrBlank()) {
+            navController.navigate(
+                Screen.WindowMatches(
+                    subscriptionId = deepLinkSubscriptionId,
+                    windowId = deepLinkWindowId
+                )
+            )
+            onDeepLinkConsumed()
+        }
     }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -56,10 +72,10 @@ fun AppNavGraph(
 
     val isHome = currentRoute.contains("NewsFeed")
     val isSubscriptions = currentRoute.contains("SubscriptionsList")
-    val isNotifications = currentRoute.contains("Notifications") || currentRoute.contains("WindowMatches")
+    val isNotifications = currentRoute.contains("Notifications") && !currentRoute.contains("WindowMatches")
     val isDebug = currentRoute.contains("Debug")
 
-    val showBottomBar = isHome || isSubscriptions || (isNotifications && deepLinkSubscriptionId == null) || isDebug
+    val showBottomBar = isHome || isSubscriptions || isNotifications || isDebug
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
@@ -230,7 +246,7 @@ fun AppNavGraph(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = effectiveStart,
+            startDestination = Screen.NewsFeed,
             modifier = Modifier
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues),
@@ -301,7 +317,19 @@ fun AppNavGraph(
 
             // ── Screen 2: Story Detail ──
             composable<Screen.StoryDetail> {
-                StoryDetailScreen(onBack = { navController.navigateUp() })
+                StoryDetailScreen(
+                    onBack = {
+                        val popped = navController.navigateUp()
+                        if (!popped) {
+                            navController.navigate(Screen.NewsFeed) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
             }
 
             // ── Screen 3: Subscriptions List ──
@@ -353,7 +381,17 @@ fun AppNavGraph(
             // ── Screen 6: Deep Link Window Matches ──
             composable<Screen.WindowMatches> {
                 WindowMatchesScreen(
-                    onBack = { navController.navigateUp() },
+                    onBack = {
+                        val popped = navController.navigateUp()
+                        if (!popped) {
+                            navController.navigate(Screen.NewsFeed) {
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
+                        }
+                    },
                     onStoryClick = { subscriptionId, key ->
                         navController.navigate(Screen.StoryDetail(activityKey = key, subscriptionId = subscriptionId))
                     },

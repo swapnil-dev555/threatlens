@@ -2,6 +2,7 @@ package com.example.threatlens.ui.debug
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.threatlens.data.api.CyberNewsApi
 import com.example.threatlens.data.debug.DebugSettings
 import com.example.threatlens.data.fake.FakeBackendInterceptor
 import com.example.threatlens.data.fcm.DeviceTokenManager
@@ -28,7 +29,9 @@ data class DebugUiState(
 class DebugViewModel @Inject constructor(
     private val debugSettings: DebugSettings,
     private val deviceTokenManager: DeviceTokenManager,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: NotificationHelper,
+    private val api: CyberNewsApi,
+    private val fakeBackendInterceptor: FakeBackendInterceptor
 ) : ViewModel() {
 
     val uiState: StateFlow<DebugUiState> = combine(
@@ -62,13 +65,36 @@ class DebugViewModel @Inject constructor(
     fun resetAll() = debugSettings.resetAll()
 
     fun triggerPushNotification() {
-        notificationHelper.showNotification(
-            title = "Critical Alert: Patch Tuesday 0-Days",
-            body = "3 new vulnerabilities matching your 'Patch Tuesday' subscription were detected.",
-            subscriptionId = FakeBackendInterceptor.SEEDED_SUB_ID,
-            windowId = FakeBackendInterceptor.SEEDED_WINDOW_ID,
-            matchedCount = 3
-        )
+        viewModelScope.launch {
+            try {
+                val response = api.getNews(limit = 60)
+                val stories = response.items
+                val pickedStory = stories.randomOrNull() ?: stories.firstOrNull()
+                if (pickedStory != null) {
+                    notificationHelper.showNotification(
+                        title = pickedStory.title,
+                        body = pickedStory.atAGlance.ifBlank { pickedStory.title },
+                        subscriptionId = FakeBackendInterceptor.SEEDED_SUB_ID,
+                        windowId = FakeBackendInterceptor.SEEDED_WINDOW_ID,
+                        activityKey = pickedStory.activityKey,
+                        matchedCount = 1
+                    )
+                    return@launch
+                }
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+            }
+
+            val fallbackStory = fakeBackendInterceptor.getSeededStory()
+            notificationHelper.showNotification(
+                title = fallbackStory?.title ?: "Critical Alert: Ransomware Outbreak",
+                body = fallbackStory?.summary ?: "New threat intelligence matching your subscription.",
+                subscriptionId = FakeBackendInterceptor.SEEDED_SUB_ID,
+                windowId = FakeBackendInterceptor.SEEDED_WINDOW_ID,
+                activityKey = fallbackStory?.activityKey,
+                matchedCount = 1
+            )
+        }
     }
 
     fun forceCrash() {

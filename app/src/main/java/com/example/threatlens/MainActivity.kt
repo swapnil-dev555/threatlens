@@ -7,12 +7,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Intent
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.*
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.threatlens.data.debug.DebugSettings
 import com.example.threatlens.data.fcm.DeviceTokenManager
+import com.example.threatlens.data.fcm.NotificationHelper.Companion.EXTRA_STORY_ACTIVITY_KEY
 import com.example.threatlens.data.fcm.NotificationHelper.Companion.EXTRA_SUBSCRIPTION_ID
 import com.example.threatlens.data.fcm.NotificationHelper.Companion.EXTRA_WINDOW_ID
 import com.example.threatlens.ui.navigation.AppNavGraph
@@ -32,11 +34,23 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var debugSettings: DebugSettings
 
+    private var pushStoryActivityKey by mutableStateOf<String?>(null)
+    private var pushSubscriptionId by mutableStateOf<String?>(null)
+    private var pushWindowId by mutableStateOf<String?>(null)
+
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         FirebaseCrashlytics.getInstance().setCustomKey(com.example.threatlens.common.AppConstants.NOTIFICATION_PERMISSION_KEY, granted)
         // If denied, the app still works — push will silently fail on Android 13+
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        pushStoryActivityKey = intent.getStringExtra(EXTRA_STORY_ACTIVITY_KEY)
+        pushSubscriptionId = intent.getStringExtra(EXTRA_SUBSCRIPTION_ID)
+        pushWindowId = intent.getStringExtra(EXTRA_WINDOW_ID)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,13 +71,23 @@ class MainActivity : ComponentActivity() {
         deviceTokenManager.retryPendingRegistration()
 
         // Extract push deep link extras
-        val pushSubscriptionId = intent.getStringExtra(EXTRA_SUBSCRIPTION_ID)
-        val pushWindowId = intent.getStringExtra(EXTRA_WINDOW_ID)
+        pushStoryActivityKey = intent.getStringExtra(EXTRA_STORY_ACTIVITY_KEY)
+        pushSubscriptionId = intent.getStringExtra(EXTRA_SUBSCRIPTION_ID)
+        pushWindowId = intent.getStringExtra(EXTRA_WINDOW_ID)
 
         setContent {
             val isDark by debugSettings.isDarkMode.collectAsStateWithLifecycle()
+            val hasDeepLink = !pushStoryActivityKey.isNullOrBlank() ||
+                    (!pushSubscriptionId.isNullOrBlank() && !pushWindowId.isNullOrBlank())
+
             var showSplash by remember {
-                mutableStateOf(pushSubscriptionId == null && pushWindowId == null)
+                mutableStateOf(!hasDeepLink)
+            }
+
+            LaunchedEffect(pushStoryActivityKey, pushSubscriptionId, pushWindowId) {
+                if (!pushStoryActivityKey.isNullOrBlank() || (!pushSubscriptionId.isNullOrBlank() && !pushWindowId.isNullOrBlank())) {
+                    showSplash = false
+                }
             }
 
             CyberSentinelTheme(darkTheme = isDark) {
@@ -76,8 +100,14 @@ class MainActivity : ComponentActivity() {
                         SplashScreen(onSplashComplete = { showSplash = false })
                     } else {
                         AppNavGraph(
+                            deepLinkStoryActivityKey = pushStoryActivityKey,
                             deepLinkSubscriptionId = pushSubscriptionId,
-                            deepLinkWindowId = pushWindowId
+                            deepLinkWindowId = pushWindowId,
+                            onDeepLinkConsumed = {
+                                pushStoryActivityKey = null
+                                pushSubscriptionId = null
+                                pushWindowId = null
+                            }
                         )
                     }
                 }

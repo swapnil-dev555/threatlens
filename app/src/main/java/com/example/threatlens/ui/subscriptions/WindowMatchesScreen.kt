@@ -1,5 +1,6 @@
 package com.example.threatlens.ui.subscriptions
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,6 +39,10 @@ fun WindowMatchesScreen(
     onViewSubscription: ((String) -> Unit)? = null,
     viewModel: WindowMatchesViewModel = hiltViewModel()
 ) {
+    if (onBack != null) {
+        BackHandler(onBack = onBack)
+    }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val darkTealButtonText = colorResource(R.color.color_dark_teal_button_text)
 

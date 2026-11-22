@@ -37,12 +37,15 @@ class CyberNewsMessagingService : FirebaseMessagingService() {
             log("Push received: windowId=$windowId, subId=$subscriptionId, matches=$matchedCount")
         }
 
+        val activityKey = data["activity_key"] ?: data["story_activity_key"]
+
         if (subscriptionId != null && windowId != null) {
             notificationHelper.showNotification(
                 title = title,
                 body = body,
                 subscriptionId = subscriptionId,
                 windowId = windowId,
+                activityKey = activityKey,
                 matchedCount = matchedCount
             )
         }

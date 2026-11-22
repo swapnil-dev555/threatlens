@@ -293,7 +293,10 @@ class FakeBackendInterceptor(
     }
 
     private fun Request.handleGetStory(activityKey: String): Response {
-        val story = seededStories.find { it.activityKey == activityKey }
+        val decoded = try { java.net.URLDecoder.decode(activityKey, "UTF-8") } catch (_: Exception) { activityKey }
+        val story = seededStories.find { it.activityKey == activityKey || it.activityKey == decoded }
+            ?: seededStories.find { it.activityKey.endsWith(activityKey.takeLast(12)) }
+            ?: seededStories.firstOrNull()
             ?: return jsonResponse(404, """{"error":"Story not found"}""")
         return jsonResponse(200, json.encodeToString(story))
     }
@@ -356,15 +359,18 @@ class FakeBackendInterceptor(
         val matchedStories = filterStoriesBySubscription(sub)
         val count = matchedStories.size
         val windowId = UUID.randomUUID().toString()
+        val targetStory = matchedStories.firstOrNull() ?: seededStories.firstOrNull()
         notificationHelper?.showNotification(
-            title = "New Subscription Active: ${sub.name}",
-            body = if (count > 0) {
-                "$count matching threat intelligence stories found for your new subscription."
-            } else {
-                "Subscription '${sub.name}' is now active and monitoring threats."
-            },
+            title = targetStory?.title ?: "New Subscription Active: ${sub.name}",
+            body = targetStory?.summary?.ifBlank { targetStory.title }
+                ?: if (count > 0) {
+                    "$count matching threat intelligence stories found for your new subscription."
+                } else {
+                    "Subscription '${sub.name}' is now active and monitoring threats."
+                },
             subscriptionId = sub.id,
             windowId = windowId,
+            activityKey = targetStory?.activityKey,
             matchedCount = count
         )
 
@@ -544,7 +550,8 @@ class FakeBackendInterceptor(
                 id = SEEDED_SUB_ID,
                 name = "Incident alert",
                 categories = listOf("incidents_and_breaches"),
-                cadence = "realtime",
+                cadence = "daily",
+                cadenceTime = "09:00:00",
                 timezone = "Asia/Kolkata",
                 nextFireAt = Instant.now().plusSeconds(120).toString(),
                 createdAt = now, updatedAt = now
@@ -560,8 +567,8 @@ class FakeBackendInterceptor(
                     "notable_vulnerabilities", "ransomware_activity",
                     "third_party_supply_chain_risk"
                 ),
-                cadence = "hourly",
-                cadenceMinute = 0,
+                cadence = "daily",
+                cadenceTime = "09:00:00",
                 timezone = "Asia/Kolkata",
                 nextFireAt = Instant.now().plusSeconds(3600).toString(),
                 createdAt = now, updatedAt = now
@@ -569,7 +576,9 @@ class FakeBackendInterceptor(
         )
     }
 
-    private val seededStories: List<NewsStory> by lazy { generateStories() }
+    val seededStories: List<NewsStory> by lazy { generateStories() }
+
+    fun getSeededStory(): NewsStory? = seededStories.randomOrNull() ?: seededStories.firstOrNull()
 
     private fun generateStories(): List<NewsStory> {
         val stories = mutableListOf<NewsStory>()
@@ -675,7 +684,7 @@ class FakeBackendInterceptor(
 
         templates.forEachIndexed { index, t ->
             val publishedTs = baseTime.plusSeconds((index * 600).toLong()).toString()
-            val key = "source_campaign_shadow:srcdoc_rss_feed_${UUID.randomUUID().toString().replace("-", "").take(24)}"
+            val key = "source_campaign_shadow:srcdoc_rss_feed_%04d".format(index + 1)
             stories.add(
                 NewsStory(
                     activityKey = key,

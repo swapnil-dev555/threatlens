@@ -2,6 +2,7 @@ package com.example.threatlens.ui.story
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -38,6 +39,8 @@ fun StoryDetailScreen(
     onBack: () -> Unit,
     viewModel: StoryDetailViewModel = hiltViewModel()
 ) {
+    BackHandler(onBack = onBack)
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val story = uiState.story
@@ -197,9 +200,9 @@ private fun StoryDetailsContent(
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.dimen_16dp))
     ) {
         // ── 1. Top Badges Row: [ General Threat Activity ] [ TLP: Clear ] ──
-        Row(
+        FlowRow(
             horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.dimen_8dp)),
-            verticalAlignment = Alignment.CenterVertically
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.dimen_8dp))
         ) {
             val sectionLabel = story.sectionLabel.ifBlank { stringResource(R.string.general_threat_activity) }
             OutlinedPillBadge(text = sectionLabel)

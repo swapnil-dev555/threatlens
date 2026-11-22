@@ -149,23 +149,42 @@ class SubscriptionsListViewModel @Inject constructor(
     }
 }
 
+fun formatCadenceTime(timeStr: String?): String {
+    if (timeStr.isNullOrBlank()) return "09:00 AM"
+    return try {
+        val parts = timeStr.split(":")
+        val h = parts.getOrNull(0)?.toIntOrNull() ?: 9
+        val m = parts.getOrNull(1)?.toIntOrNull() ?: 0
+        val amPm = if (h >= 12) "PM" else "AM"
+        val h12 = when {
+            h == 0 -> 12
+            h > 12 -> h - 12
+            else -> h
+        }
+        String.format(java.util.Locale.US, "%02d:%02d %s", h12, m, amPm)
+    } catch (_: Exception) {
+        timeStr.take(5)
+    }
+}
+
 /** Utility to format a cadence into a human-readable string */
 fun Subscription.cadenceSummary(): String {
     val dayNames = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     val monthNames = listOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    val formattedTime = formatCadenceTime(cadenceTime)
 
     return when (cadence) {
         "realtime" -> "Real-time, $timezone"
         "hourly" -> "Hourly at :${(cadenceMinute ?: 0).toString().padStart(2, '0')}, $timezone"
-        "daily" -> "Daily at ${cadenceTime ?: "00:00"}, $timezone"
+        "daily" -> "Daily at $formattedTime, $timezone"
         "weekly" -> {
             val day = cadenceDayOfWeek?.let { dayNames.getOrNull(it) } ?: "Monday"
-            "Weekly, ${day}s ${cadenceTime ?: "09:00"}, $timezone"
+            "Weekly, ${day}s at $formattedTime, $timezone"
         }
-        "monthly" -> "Monthly, day ${cadenceDayOfMonth ?: 1} at ${cadenceTime ?: "09:00"}, $timezone"
+        "monthly" -> "Monthly, day ${cadenceDayOfMonth ?: 1} at $formattedTime, $timezone"
         "yearly" -> {
             val month = cadenceMonth?.let { monthNames.getOrNull(it - 1) } ?: "Jan"
-            "Yearly, $month ${cadenceDayOfMonth ?: 1} at ${cadenceTime ?: "09:00"}, $timezone"
+            "Yearly, $month ${cadenceDayOfMonth ?: 1} at $formattedTime, $timezone"
         }
         else -> cadence
     }

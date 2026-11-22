@@ -51,8 +51,12 @@ class StoryDetailViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             val result = if (!subscriptionId.isNullOrBlank()) {
-                // Tapping a match opens it (GET /news-subscriptions/{id}/matches/{activity_key})
-                subscriptionRepository.getSubscriptionMatchStory(subscriptionId, activityKey)
+                val subResult = subscriptionRepository.getSubscriptionMatchStory(subscriptionId, activityKey)
+                if (subResult.isFailure) {
+                    newsRepository.getStory(activityKey)
+                } else {
+                    subResult
+                }
             } else {
                 newsRepository.getStory(activityKey)
             }

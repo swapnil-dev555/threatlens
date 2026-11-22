@@ -21,6 +21,7 @@ class NotificationHelper @Inject constructor(
         const val CHANNEL_NAME_ALERTS = com.example.threatlens.common.AppConstants.CHANNEL_NAME_ALERTS
         const val EXTRA_SUBSCRIPTION_ID = com.example.threatlens.common.AppConstants.EXTRA_SUBSCRIPTION_ID
         const val EXTRA_WINDOW_ID = com.example.threatlens.common.AppConstants.EXTRA_WINDOW_ID
+        const val EXTRA_STORY_ACTIVITY_KEY = com.example.threatlens.common.AppConstants.EXTRA_STORY_ACTIVITY_KEY
     }
 
     init {
@@ -70,7 +71,8 @@ class NotificationHelper @Inject constructor(
         body: String,
         subscriptionId: String,
         windowId: String,
-        matchedCount: Int
+        activityKey: String? = null,
+        matchedCount: Int = 1
     ) {
         if (!areNotificationsEnabled()) {
             com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance().apply {
@@ -84,6 +86,9 @@ class NotificationHelper @Inject constructor(
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             putExtra(EXTRA_SUBSCRIPTION_ID, subscriptionId)
             putExtra(EXTRA_WINDOW_ID, windowId)
+            if (!activityKey.isNullOrBlank()) {
+                putExtra(EXTRA_STORY_ACTIVITY_KEY, activityKey)
+            }
         }
 
         val pendingIntent = PendingIntent.getActivity(

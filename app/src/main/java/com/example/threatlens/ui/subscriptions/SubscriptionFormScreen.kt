@@ -67,6 +67,7 @@ fun SubscriptionFormScreen(
         )
     }
     var showPermissionDeniedDialog by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -207,6 +208,86 @@ fun SubscriptionFormScreen(
                         Text(stringResource(R.string.action_continue_without_alerts), color = ThreatLensTextSecondary)
                     }
                 }
+            )
+        }
+
+        if (showTimePicker) {
+            val parts = uiState.cadenceTime.split(":")
+            val initHour = parts.getOrNull(0)?.toIntOrNull() ?: 9
+            val initMinute = parts.getOrNull(1)?.toIntOrNull() ?: 0
+
+            val timePickerState = rememberTimePickerState(
+                initialHour = initHour,
+                initialMinute = initMinute,
+                is24Hour = false
+            )
+
+            AlertDialog(
+                onDismissRequest = { showTimePicker = false },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            val formatted = String.format(
+                                java.util.Locale.US,
+                                "%02d:%02d:00",
+                                timePickerState.hour,
+                                timePickerState.minute
+                            )
+                            viewModel.updateCadenceTime(formatted)
+                            showTimePicker = false
+                        }
+                    ) {
+                        Text(
+                            stringResource(R.string.action_ok),
+                            color = ThreatLensCyan,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showTimePicker = false }) {
+                        Text(
+                            stringResource(R.string.action_cancel),
+                            color = ThreatLensTextSecondary
+                        )
+                    }
+                },
+                title = {
+                    Text(
+                        text = stringResource(R.string.form_time_label),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = ThreatLensTextPrimary
+                    )
+                },
+                text = {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        TimePicker(
+                            state = timePickerState,
+                            colors = TimePickerDefaults.colors(
+                                clockDialColor = ThreatLensSurface,
+                                clockDialSelectedContentColor = ThreatLensBackground,
+                                clockDialUnselectedContentColor = ThreatLensTextPrimary,
+                                selectorColor = ThreatLensCyan,
+                                containerColor = ThreatLensSurfaceElevated,
+                                periodSelectorBorderColor = ThreatLensCardBorder,
+                                periodSelectorSelectedContainerColor = ThreatLensCyan.copy(alpha = 0.25f),
+                                periodSelectorUnselectedContainerColor = ThreatLensSurface,
+                                periodSelectorSelectedContentColor = ThreatLensCyan,
+                                periodSelectorUnselectedContentColor = ThreatLensTextSecondary,
+                                timeSelectorSelectedContainerColor = ThreatLensCyan.copy(alpha = 0.25f),
+                                timeSelectorUnselectedContainerColor = ThreatLensSurface,
+                                timeSelectorSelectedContentColor = ThreatLensCyan,
+                                timeSelectorUnselectedContentColor = ThreatLensTextPrimary
+                            )
+                        )
+                    }
+                },
+                containerColor = ThreatLensSurfaceElevated,
+                shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_card)),
+                tonalElevation = dimensionResource(R.dimen.dimen_8dp)
             )
         }
 
@@ -604,7 +685,7 @@ fun SubscriptionFormScreen(
                 }
             }
 
-            // ── 5. Time * (09:00 with Clock icon) ──
+            // ── 5. Time * (Android Clock with AM / PM) ──
             Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.dimen_6dp))) {
                 Text(
                     text = stringResource(R.string.form_time_label),
@@ -612,34 +693,42 @@ fun SubscriptionFormScreen(
                     color = ThreatLensTextPrimary
                 )
 
-                OutlinedTextField(
-                    value = uiState.cadenceTime.take(5), // "09:00"
-                    onValueChange = { newVal ->
-                        if (newVal.length <= 5) {
-                            val formatted = if (newVal.length == 5) "$newVal:00" else newVal
-                            viewModel.updateCadenceTime(formatted)
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_card)),
-                    trailingIcon = {
-                        Icon(
-                            Icons.Outlined.Schedule,
-                            contentDescription = stringResource(R.string.time_picker_content_desc),
-                            tint = ThreatLensCyan,
-                            modifier = Modifier.size(dimensionResource(R.dimen.dimen_20dp))
+                val displayTime = remember(uiState.cadenceTime) {
+                    formatCadenceTimeDisplay(uiState.cadenceTime)
+                }
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(dimensionResource(R.dimen.corner_radius_card)))
+                        .clickable { showTimePicker = true }
+                ) {
+                    OutlinedTextField(
+                        value = displayTime,
+                        onValueChange = {},
+                        readOnly = true,
+                        enabled = false,
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_card)),
+                        trailingIcon = {
+                            IconButton(onClick = { showTimePicker = true }) {
+                                Icon(
+                                    Icons.Outlined.Schedule,
+                                    contentDescription = stringResource(R.string.time_picker_content_desc),
+                                    tint = ThreatLensCyan,
+                                    modifier = Modifier.size(dimensionResource(R.dimen.dimen_20dp))
+                                )
+                            }
+                        },
+                        singleLine = true,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            disabledContainerColor = ThreatLensSurface,
+                            disabledBorderColor = ThreatLensCardBorder,
+                            disabledTextColor = ThreatLensTextPrimary,
+                            disabledTrailingIconColor = ThreatLensCyan
                         )
-                    },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = ThreatLensSurfaceElevated,
-                        unfocusedContainerColor = ThreatLensSurface,
-                        focusedBorderColor = ThreatLensCyan,
-                        unfocusedBorderColor = ThreatLensCardBorder,
-                        focusedTextColor = ThreatLensTextPrimary,
-                        unfocusedTextColor = ThreatLensTextPrimary
                     )
-                )
+                }
             }
 
             // ── 6. Time Zone * ──
@@ -748,5 +837,22 @@ fun SubscriptionFormScreen(
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.dimen_24dp)))
         }
+    }
+}
+
+private fun formatCadenceTimeDisplay(timeStr: String): String {
+    return try {
+        val parts = timeStr.split(":")
+        val hour = parts.getOrNull(0)?.toIntOrNull() ?: 9
+        val minute = parts.getOrNull(1)?.toIntOrNull() ?: 0
+        val amPm = if (hour >= 12) "PM" else "AM"
+        val hour12 = when {
+            hour == 0 -> 12
+            hour > 12 -> hour - 12
+            else -> hour
+        }
+        String.format(java.util.Locale.US, "%02d:%02d %s", hour12, minute, amPm)
+    } catch (_: Exception) {
+        timeStr.take(5)
     }
 }

@@ -80,6 +80,7 @@ class SubscriptionFormViewModel @Inject constructor(
             subscriptionRepository.getSubscriptions(limit = 50).onSuccess { response ->
                 val sub = response.items.find { it.id == id }
                 if (sub != null) {
+                    val effectiveCadence = if (sub.cadence in listOf("daily", "weekly", "monthly")) sub.cadence else "daily"
                     _uiState.update {
                         it.copy(
                             name = sub.name,
@@ -92,7 +93,7 @@ class SubscriptionFormViewModel @Inject constructor(
                             vendors = sub.vendors,
                             targetSectors = sub.targetSectors,
                             targetCountries = sub.targetCountries,
-                            cadence = sub.cadence,
+                            cadence = effectiveCadence,
                             cadenceMinute = sub.cadenceMinute ?: 0,
                             cadenceTime = sub.cadenceTime ?: "09:00:00",
                             cadenceDayOfWeek = sub.cadenceDayOfWeek ?: 0,
@@ -201,6 +202,7 @@ class SubscriptionFormViewModel @Inject constructor(
 
     private fun buildPatch(existing: Subscription, form: SubscriptionFormState): PatchSubscriptionRequest {
         val cadenceChanged = form.cadence != existing.cadence
+        val timeChanged = form.cadenceTime != (existing.cadenceTime ?: "09:00:00")
         return PatchSubscriptionRequest(
             name = form.name.takeIf { it != existing.name },
             categories = form.categories.takeIf { it != existing.categories },
@@ -217,8 +219,8 @@ class SubscriptionFormViewModel @Inject constructor(
                 form.cadenceMinute.takeIf { it != existing.cadenceMinute || cadenceChanged }
             } else null,
             cadenceTime = if (form.cadence in listOf("daily", "weekly", "monthly", "yearly")) {
-                form.cadenceTime.takeIf { it != existing.cadenceTime || cadenceChanged }
-            } else null,
+                form.cadenceTime.takeIf { timeChanged || cadenceChanged || existing.cadenceTime == null }
+            } else form.cadenceTime,
             cadenceDayOfWeek = if (form.cadence == "weekly") {
                 form.cadenceDayOfWeek.takeIf { it != existing.cadenceDayOfWeek || cadenceChanged }
             } else null,
